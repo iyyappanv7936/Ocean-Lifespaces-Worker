@@ -1,0 +1,1750 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <meta content="#1f4e78" name="theme-color"/>
+  <title>
+   Ocean Lifespaces | Workers Registration Portal
+  </title>
+  <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js">
+  </script>
+  <style>
+:root {
+  --blue:#1f4e78;
+  --navy:#0c0569;
+  --pale:#ccddf1;
+  --green:#198754;
+  --red:#dc3545;
+  --purple:#6f2ce0;
+  --muted:#64748b;
+  --line:#dce3eb;
+  --bg:#f1f4f8;
+  --white:#fff;
+  --shadow:0 8px 28px #152a4412
+}
+
+* {
+  box-sizing:border-box
+}
+html {
+  scroll-behavior:smooth
+}
+body {
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
+  background:var(--bg);
+  color:#222;
+  line-height:1.45
+}
+body.admin-mode {
+  overflow:hidden
+}
+button,input,select,textarea {
+  font:inherit
+}
+button {
+  padding:11px 15px;
+  border:0;
+  border-radius:7px;
+  cursor:pointer;
+  font-weight:700;
+  transition:filter .15s,transform .15s
+}
+button:hover:not(:disabled) {
+  filter:brightness(.95)
+}
+button:active:not(:disabled) {
+  transform:translateY(1px)
+}
+button:disabled {
+  opacity:.58;
+  cursor:wait
+}
+input,select,textarea {
+  width:100%;
+  padding:12px;
+  border:1px solid #c8d1dc;
+  border-radius:7px;
+  background:#fff;
+  color:#17202a;
+  outline:none
+}
+input:focus,select:focus,textarea:focus {
+  border-color:#4c8bc3;
+  box-shadow:0 0 0 3px #1f4e7818
+}
+textarea {
+  min-height:90px;
+  resize:vertical
+}
+label {
+  display:block;
+  font-weight:700;
+  margin-bottom:7px
+}
+.required {
+  color:#c62828
+}
+.hint,.muted {
+  color:var(--muted);
+  font-size:12px
+}
+.header {
+  background:var(--pale);
+  padding:16px;
+  margin:10px;
+  color:var(--navy);
+  display:flex;
+  align-items:center;
+  gap:20px;
+  min-height:100px;
+  border-radius:10px
+}
+.header img {
+  max-width:110px;
+  max-height:85px;
+  object-fit:contain
+}
+.head {
+  text-align:center;
+  flex:1
+}
+.header h1 {
+  font-size:clamp(20px,3vw,28px);
+  margin:0 0 8px
+}
+.header h3 {
+  margin:0;
+  font-size:18px
+}
+.container {
+  width:95%;
+  max-width:900px;
+  margin:28px auto
+}
+.card {
+  background:#fff;
+  padding:28px;
+  border-radius:12px;
+  box-shadow:var(--shadow)
+}
+.section-title {
+  text-align:center;
+  font-size:13px;
+  color:#656de0;
+  font-weight:bold;
+  border-bottom:2px solid #eee;
+  padding-bottom:14px;
+  margin-bottom:22px
+}
+.form-group {
+  margin-bottom:18px
+}
+.security {
+  text-align:center;
+  position:relative;
+  margin-bottom:24px;
+  min-height:65px
+}
+.security img {
+  max-width:250px;
+  max-height:120px;
+  object-fit:contain
+}
+.admin-link {
+  position:absolute;
+  left:0;
+  top:0
+}
+.primary,.camera-btn,.admin-link button {
+  background:var(--blue);
+  color:white
+}
+.success-btn,.file-btn,.export-btn,.capture-btn {
+  background:var(--green);
+  color:white
+}
+.clear-btn,.admin-login-cancel,.secondary {
+  background:#e5e7eb;
+  color:#202938
+}
+.danger,.logout-btn,.close-camera-btn,.delete-btn {
+  background:var(--red);
+  color:white
+}
+.purple {
+  background:var(--purple);
+  color:#fff
+}
+.buttons,.camera-buttons,.camera-actions,.admin-login-buttons,.toolbar,.filter-row,.pagination,.modal-actions {
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+  align-items:center
+}
+.submit-btn {
+  flex:1
+}
+.image-preview {
+  margin-top:12px;
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  flex-wrap:wrap
+}
+.image-preview img {
+  width:160px;
+  height:140px;
+  object-fit:contain;
+  border:1px solid #ddd;
+  border-radius:7px;
+  background:#fafafa;
+  cursor:zoom-in
+}
+.message {
+  display:none;
+  padding:13px;
+  margin-top:18px;
+  border-radius:7px;
+  text-align:center
+}
+.message.success {
+  display:block;
+  background:#d4edda;
+  color:#155724
+}
+.message.error {
+  display:block;
+  background:#fdecec;
+  color:#b42318
+}
+.login-card {
+  max-width:450px;
+  margin:35px auto
+}
+.login-card h2 {
+  color:var(--blue)
+}
+.login-error {
+  display:none;
+  color:#b42318;
+  background:#fdecec;
+  padding:10px;
+  border-radius:6px;
+  margin-bottom:14px
+}
+.file-input {
+  display:none
+}
+.field-hint {
+  font-size:12px;
+  color:#667085;
+  margin-top:5px
+}
+.company-footer {
+  text-align:center;
+  margin-top:20px
+}
+.company-footer img {
+  max-width:180px;
+  max-height:100px;
+  object-fit:contain
+}
+
+#adminPanel {
+  display:none;
+  position:fixed;
+  inset:0;
+  padding:18px;
+  overflow:auto;
+  background:#f5f7fa;
+  z-index:9999
+}
+.admin-header {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  position:sticky;
+  top:-18px;
+  background:#fff;
+  padding:12px 0;
+  border-bottom:1px solid #ddd;
+  z-index:10
+}
+.admin-header h2 {
+  color:var(--blue);
+  margin:0
+}
+.admin-title {
+  display:flex;
+  gap:10px;
+  align-items:center
+}
+.admin-content {
+  max-width:1800px;
+  margin:0 auto
+}
+.dashboard-grid {
+  display:grid;
+  grid-template-columns:repeat(4,minmax(150px,1fr));
+  gap:14px;
+  margin:18px 0
+}
+.stat-card {
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:18px;
+  box-shadow:0 2px 10px #00000006
+}
+.stat-label {
+  color:var(--muted);
+  font-size:13px
+}
+.stat-value {
+  font-size:28px;
+  font-weight:800;
+  color:var(--blue);
+  margin-top:5px
+}
+.dashboard-lists {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+  margin-bottom:18px
+}
+.mini-card {
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:14px
+}
+.mini-card h3 {
+  margin:0 0 10px;
+  font-size:15px;
+  color:var(--blue)
+}
+.mini-list {
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  max-height:130px;
+  overflow:auto
+}
+.mini-list div {
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  font-size:13px;
+  border-bottom:1px solid #f0f2f5;
+  padding-bottom:4px
+}
+.admin-tools {
+  background:#fff;
+  border:1px solid var(--line);
+  padding:14px;
+  border-radius:10px;
+  margin:15px 0
+}
+.filter-row>* {
+  flex:1;
+  min-width:150px
+}
+.filter-row .search-field {
+  flex:2;
+  min-width:230px
+}
+.toolbar {
+  justify-content:space-between;
+  margin-bottom:12px
+}
+.toolbar-left,.toolbar-right {
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+  align-items:center
+}
+.table-container {
+  overflow:auto;
+  max-height:calc(100vh - 440px);
+  min-height:220px;
+  border:1px solid #d5dce5;
+  background:#fff;
+  border-radius:9px;
+  margin-top:12px
+}
+table {
+  width:100%;
+  border-collapse:collapse;
+  min-width:1550px
+}
+th,td {
+  padding:9px;
+  border:1px solid #e1e6ed;
+  text-align:left;
+  vertical-align:middle;
+  white-space:nowrap;
+  font-size:13px
+}
+th {
+  background:var(--blue);
+  color:white;
+  position:sticky;
+  top:0;
+  z-index:2
+}
+th button {
+  padding:0;
+  background:transparent;
+  color:inherit;
+  border-radius:0;
+  font-size:12px
+}
+tbody tr:nth-child(even) {
+  background:#f8fafc
+}
+tbody tr:hover {
+  background:#edf5fc
+}
+.worker-image {
+  width:82px;
+  height:75px;
+  object-fit:contain;
+  border:1px solid #ddd;
+  border-radius:5px;
+  cursor:zoom-in;
+  background:#fff
+}
+.row-actions {
+  display:flex;
+  gap:5px
+}
+.row-actions button {
+  padding:7px 9px;
+  font-size:12px
+}
+.no-data {
+  text-align:center;
+  padding:24px;
+  color:#777
+}
+.pagination {
+  justify-content:space-between;
+  padding:12px;
+  background:#fff;
+  border:1px solid var(--line);
+  border-top:0;
+  border-radius:0 0 9px 9px
+}
+.pagination .page-controls {
+  display:flex;
+  gap:6px;
+  align-items:center
+}
+.page-size {
+  width:90px;
+  padding:8px
+}
+.camera-modal,.image-viewer,.edit-modal {
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:10000;
+  background:#000d;
+  justify-content:center;
+  align-items:center;
+  padding:15px
+}
+.camera-box,.edit-box {
+  background:#fff;
+  width:95%;
+  max-width:620px;
+  padding:18px;
+  border-radius:12px;
+  max-height:92vh;
+  overflow:auto
+}
+.camera-box {
+  text-align:center
+}
+.camera-box video {
+  width:100%;
+  max-height:65vh;
+  background:#111;
+  border-radius:8px
+}
+.image-viewer {
+  z-index:20000
+}
+.image-viewer img {
+  max-width:95%;
+  max-height:90%;
+  object-fit:contain
+}
+.close-viewer {
+  position:absolute;
+  top:12px;
+  right:24px;
+  color:#fff;
+  font-size:38px;
+  cursor:pointer
+}
+.edit-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px
+}
+.edit-box h2 {
+  color:var(--blue);
+  margin-top:0
+}
+.edit-box .form-group {
+  margin-bottom:12px
+}
+.edit-images {
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px
+}
+.edit-image-card {
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:8px
+}
+.edit-image-card img {
+  width:100%;
+  height:100px;
+  object-fit:contain
+}
+.toast-region {
+  position:fixed;
+  right:15px;
+  bottom:15px;
+  z-index:30000;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  max-width:min(400px,90vw)
+}
+.toast {
+  padding:12px 15px;
+  background:#17202a;
+  color:white;
+  border-radius:8px;
+  box-shadow:var(--shadow)
+}
+.toast.error {
+  background:#a61b1b
+}
+.toast.success {
+  background:#17663a
+}
+.small-btn {
+  padding:7px 10px;
+  font-size:12px
+}
+.badge {
+  display:inline-block;
+  border-radius:999px;
+  padding:3px 8px;
+  font-size:11px;
+  font-weight:700;
+  background:#e9f2fa;
+  color:var(--blue)
+}
+.privacy-note {
+  font-size:12px;
+  color:#687385;
+  background:#f8fafc;
+  border:1px solid #e2e8f0;
+  border-radius:7px;
+  padding:10px;
+  margin-bottom:16px
+}
+.hidden {
+  display:none!important
+}
+
+@media(max-width:950px) {
+  .dashboard-grid {
+    grid-template-columns:repeat(2,minmax(0,1fr))
+  }
+  .dashboard-lists {
+    grid-template-columns:1fr 1fr
+  }
+  .table-container {
+    max-height:calc(100vh - 500px)
+  }
+}
+
+@media(max-width:600px) {
+  .header {
+    flex-direction:column;
+    text-align:center;
+    margin:6px;
+    padding:14px
+  }
+  .header img {
+    max-width:90px
+  }
+  .container {
+    width:96%;
+    margin:14px auto
+  }
+  .card {
+    padding:17px
+  }
+  .admin-link {
+    position:static;
+    margin:10px 0
+  }
+  .security {
+    display:flex;
+    flex-direction:column;
+    align-items:center
+  }
+  .buttons,.camera-buttons {
+    flex-direction:column;
+    align-items:stretch
+  }
+  .camera-buttons button,.buttons button {
+    width:100%
+  }
+  #adminPanel {
+    padding:9px
+  }
+  .admin-header {
+    align-items:stretch;
+    flex-direction:column;
+    top:-9px
+  }
+  .admin-header .camera-actions {
+    display:flex;
+    flex-wrap:wrap
+  }
+  .admin-header button {
+    flex:1
+  }
+  .dashboard-grid {
+    grid-template-columns:1fr 1fr;
+    gap:8px
+  }
+  .stat-card {
+    padding:12px
+  }
+  .stat-value {
+    font-size:23px
+  }
+  .dashboard-lists {
+    grid-template-columns:1fr
+  }
+  .filter-row {
+    display:grid;
+    grid-template-columns:1fr
+  }
+  .filter-row>* {
+    min-width:0
+  }
+  .toolbar {
+    align-items:stretch;
+    flex-direction:column
+  }
+  .toolbar-left,.toolbar-right {
+    width:100%
+  }
+  .toolbar button {
+    flex:1
+  }
+  .table-container {
+    max-height:55vh
+  }
+  .pagination {
+    align-items:flex-start;
+    flex-direction:column
+  }
+  .edit-grid {
+    grid-template-columns:1fr
+  }
+  .edit-images {
+    grid-template-columns:1fr
+  }
+  .edit-box {
+    padding:13px
+  }
+  .row-actions {
+    flex-direction:column
+  }
+}
+</style>
+ </head>
+ <body>
+  <header class="header">
+   <img alt="Ocean Lifespaces logo" onerror="this.style.display='none'" src="ocean logo.jpg"/>
+   <div class="head">
+    <h1>
+     Ocean Lifespaces India Private Limited
+    </h1>
+    <h3>
+     Workers Registration Portal
+    </h3>
+   </div>
+  </header>
+  <main class="container">
+   <section class="card" id="formPanel">
+    <div class="section-title">
+     The Workers Register Form is used to maintain a detailed and up-to-date record of workers engaged in the organization.
+    </div>
+    <div class="privacy-note">
+     Please verify all details before submitting. Aadhaar images and worker photos are stored in the private Drive folder configured by the portal administrator.
+    </div>
+    <form id="workerForm" novalidate="">
+     <div class="security">
+      <img alt="Security" onerror="this.style.display='none'" src="sec.jpg"/>
+      <div class="admin-link">
+       <button onclick="showAdminLogin()" type="button">
+        Admin Login
+       </button>
+      </div>
+     </div>
+     <div class="form-group">
+      <label for="project">
+       Name Of The Project
+       <span class="required">
+        *
+       </span>
+      </label>
+      <select id="project" required="">
+       <option value="">
+        Choose
+       </option>
+       <option>
+        EY-Global Kochi
+       </option>
+       <option>
+        Ocean Lifespaces
+       </option>
+      </select>
+     </div>
+     <div class="form-group">
+      <label for="employeeName">
+       Worker Name
+       <span class="required">
+        *
+       </span>
+      </label>
+      <input autocomplete="name" id="employeeName" maxlength="120" placeholder="Enter worker name" required=""/>
+     </div>
+     <div class="form-group">
+      <label for="dateOfBirth">
+       Date of Birth
+       <span class="required">
+        *
+       </span>
+      </label>
+      <input id="dateOfBirth" required="" type="date"/>
+     </div>
+     <div class="form-group">
+      <label for="mobileNumber">
+       Mobile Number
+       <span class="required">
+        *
+       </span>
+      </label>
+      <input autocomplete="tel" id="mobileNumber" inputmode="numeric" maxlength="10" pattern="[0-9]{10}" placeholder="10-digit mobile number" required="" type="tel"/>
+     </div>
+     <div class="form-group">
+      <label for="emergencyContact">
+       Emergency Contact Number
+       <span class="required">
+        *
+       </span>
+      </label>
+      <input id="emergencyContact" inputmode="numeric" maxlength="10" pattern="[0-9]{10}" placeholder="10-digit emergency contact" required="" type="tel"/>
+     </div>
+     <div class="form-group">
+      <label for="designation">
+       Designation
+       <span class="required">
+        *
+       </span>
+      </label>
+      <select id="designation" required="">
+       <option value="">
+        Choose
+       </option>
+       <option>
+        Asst-Project Manager
+       </option>
+       <option>
+        Fire Fighter
+       </option>
+       <option>
+        Gypsum
+       </option>
+       <option>
+        Helper
+       </option>
+       <option>
+        Mason
+       </option>
+       <option>
+        Plaster
+       </option>
+       <option>
+        POP
+       </option>
+       <option>
+        Project Manager
+       </option>
+       <option>
+        Safety Engineer
+       </option>
+       <option>
+        Safety Manager
+       </option>
+       <option>
+        Safety Officer
+       </option>
+       <option>
+        Site Engineer
+       </option>
+       <option>
+        Supervisor
+       </option>
+       <option>
+        Welder
+       </option>
+       <option>
+        Other
+       </option>
+      </select>
+     </div>
+     <div class="form-group">
+      <label for="supervisorContact">
+       Supervisor/Manager Contact Number
+       <span class="required">
+        *
+       </span>
+      </label>
+      <input id="supervisorContact" inputmode="numeric" maxlength="10" pattern="[0-9]{10}" placeholder="10-digit supervisor number" required="" type="tel"/>
+     </div>
+     <div class="form-group">
+      <label for="contractorAgency">
+       Contractor Agency
+       <span class="required">
+        *
+       </span>
+      </label>
+      <select id="contractorAgency" required="">
+       <option value="">
+        Choose
+       </option>
+       <option>
+        Bushra Interiors
+       </option>
+       <option>
+        Cholo Ram Jaat furniture
+       </option>
+       <option>
+        Dharmendra
+       </option>
+       <option>
+        Excellent Security Force
+       </option>
+       <option>
+        Limra
+       </option>
+       <option>
+        Lotus MEP Solution PVT LTD
+       </option>
+       <option>
+        MD Contracting
+       </option>
+       <option>
+        Pappu Ram
+       </option>
+       <option>
+        Rajesh Contact
+       </option>
+       <option>
+        Sree Vignesh
+       </option>
+       <option>
+        Sree Infra Project PVT LTD
+       </option>
+       <option>
+        Other
+       </option>
+      </select>
+     </div>
+     <div class="form-group">
+      <label for="aadharFrontFile">
+       Aadhar Card Front Side
+       <span class="required">
+        *
+       </span>
+      </label>
+      <div class="camera-buttons">
+       <button class="camera-btn" onclick="openCamera('aadharFront','environment')" type="button">
+        Take Photo
+       </button>
+       <button class="file-btn" onclick="document.getElementById('aadharFrontFile').click()" type="button">
+        Upload File / Use Camera
+       </button>
+      </div>
+      <input accept="image/*" capture="environment" class="file-input" id="aadharFrontFile" onchange="selectFile(this,'aadharFront')" type="file"/>
+      <input id="aadharFront" type="hidden"/>
+      <div class="image-preview" id="aadharFrontPreview">
+      </div>
+      <div class="field-hint">
+       Use a clear image with all card details visible.
+      </div>
+     </div>
+     <div class="form-group">
+      <label for="aadharBackFile">
+       Aadhar Card Back Side
+       <span class="required">
+        *
+       </span>
+      </label>
+      <div class="camera-buttons">
+       <button class="camera-btn" onclick="openCamera('aadharBack','environment')" type="button">
+        Take Photo
+       </button>
+       <button class="file-btn" onclick="document.getElementById('aadharBackFile').click()" type="button">
+        Upload File / Use Camera
+       </button>
+      </div>
+      <input accept="image/*" capture="environment" class="file-input" id="aadharBackFile" onchange="selectFile(this,'aadharBack')" type="file"/>
+      <input id="aadharBack" type="hidden"/>
+      <div class="image-preview" id="aadharBackPreview">
+      </div>
+     </div>
+     <div class="form-group">
+      <label for="photoUploadFile">
+       My Photo
+       <span class="required">
+        *
+       </span>
+      </label>
+      <div class="camera-buttons">
+       <button class="camera-btn" onclick="openCamera('photoUpload','user')" type="button">
+        Take Photo
+       </button>
+       <button class="file-btn" onclick="document.getElementById('photoUploadFile').click()" type="button">
+        Upload File / Use Camera
+       </button>
+      </div>
+      <input accept="image/*" capture="user" class="file-input" id="photoUploadFile" onchange="selectFile(this,'photoUpload')" type="file"/>
+      <input id="photoUpload" type="hidden"/>
+      <div class="image-preview" id="photoUploadPreview">
+      </div>
+     </div>
+     <div class="form-group">
+      <label for="remarks">
+       Remarks
+      </label>
+      <textarea id="remarks" maxlength="1000" placeholder="Enter remarks"></textarea>
+     </div>
+     <div class="buttons">
+      <button class="submit-btn primary" type="submit">
+       Submit Registration
+      </button>
+      <button class="clear-btn" onclick="clearImages()" type="reset">
+       Clear Form
+      </button>
+     </div>
+    </form>
+    <div aria-live="polite" class="message" id="message" role="status">
+    </div>
+    <div class="company-footer">
+     <img alt="Company anniversary" onerror="this.style.display='none'" src="30 yrs.jpg"/>
+    </div>
+   </section>
+   <section class="card login-card hidden" id="adminLoginPanel">
+    <div>
+     <h2>
+      Admin Login
+     </h2>
+     <p class="muted">
+      Sign in to view and manage all worker registrations.
+     </p>
+     <div class="login-error" id="loginError" role="alert">
+      Invalid Admin Username or Password
+     </div>
+     <form id="loginForm">
+      <div class="form-group">
+       <label for="adminUsername">
+        Username
+       </label>
+       <input autocomplete="username" id="adminUsername" placeholder="Enter admin username" required=""/>
+      </div>
+      <div class="form-group">
+       <label for="adminPassword">
+        Password
+       </label>
+       <input autocomplete="current-password" id="adminPassword" placeholder="Enter admin password" required="" type="password"/>
+      </div>
+      <div class="admin-login-buttons">
+       <button class="purple admin-login-submit" type="submit">
+        Login
+       </button>
+       <button class="admin-login-cancel" onclick="cancelAdminLogin()" type="button">
+        Cancel
+       </button>
+      </div>
+     </form>
+    </div>
+   </section>
+  </main>
+  <section aria-label="Administrator dashboard" id="adminPanel">
+   <div class="admin-content">
+    <div class="admin-header">
+     <div class="admin-title">
+      <h2>
+       Workers Administration
+      </h2>
+      <span class="badge" id="adminUserBadge">
+       Admin
+      </span>
+     </div>
+     <div class="camera-actions">
+      <button class="export-btn" onclick="exportExcel()">
+       Download Excel with Images
+      </button>
+      <button class="primary" onclick="refreshAdminData()">
+       Refresh
+      </button>
+      <button class="logout-btn" onclick="logout()">
+       Logout
+      </button>
+     </div>
+    </div>
+    <p class="hint" id="adminStatus" role="status">
+     Loading shared records…
+    </p>
+    <div class="dashboard-grid">
+     <div class="stat-card">
+      <div class="stat-label">
+       Total workers
+      </div>
+      <div class="stat-value" id="statTotal">
+       0
+      </div>
+     </div>
+     <div class="stat-card">
+      <div class="stat-label">
+       Registered today
+      </div>
+      <div class="stat-value" id="statToday">
+       0
+      </div>
+     </div>
+     <div class="stat-card">
+      <div class="stat-label">
+       Projects represented
+      </div>
+      <div class="stat-value" id="statProjects">
+       0
+      </div>
+     </div>
+     <div class="stat-card">
+      <div class="stat-label">
+       Contractors represented
+      </div>
+      <div class="stat-value" id="statContractors">
+       0
+      </div>
+     </div>
+    </div>
+    <div class="dashboard-lists">
+     <div class="mini-card">
+      <h3>
+       Workers by project
+      </h3>
+      <div class="mini-list" id="projectStats">
+      </div>
+     </div>
+     <div class="mini-card">
+      <h3>
+       Workers by designation
+      </h3>
+      <div class="mini-list" id="designationStats">
+      </div>
+     </div>
+     <div class="mini-card">
+      <h3>
+       Workers by contractor
+      </h3>
+      <div class="mini-list" id="contractorStats">
+      </div>
+     </div>
+    </div>
+    <div class="admin-tools">
+     <div class="filter-row">
+      <input aria-label="Search worker records" class="search-field" id="searchInput" placeholder="Search name, mobile, ID, project, contractor…" type="search"/>
+      <select aria-label="Filter by project" id="projectFilter">
+       <option value="">
+        All projects
+       </option>
+      </select>
+      <select aria-label="Filter by designation" id="designationFilter">
+       <option value="">
+        All designations
+       </option>
+      </select>
+      <select aria-label="Filter by contractor" id="contractorFilter">
+       <option value="">
+        All contractors
+       </option>
+      </select>
+      <select aria-label="Sort records" id="sortFilter">
+       <option value="newest">
+        Newest first
+       </option>
+       <option value="oldest">
+        Oldest first
+       </option>
+       <option value="nameAsc">
+        Worker name A–Z
+       </option>
+       <option value="nameDesc">
+        Worker name Z–A
+       </option>
+       <option value="projectAsc">
+        Project A–Z
+       </option>
+      </select>
+     </div>
+     <div class="toolbar">
+      <div class="toolbar-left">
+       <button class="secondary" onclick="resetFilters()">
+        Reset filters
+       </button>
+       <button class="secondary" onclick="printReport()">
+        Print current view
+       </button>
+      </div>
+      <div class="toolbar-right">
+       <span class="muted" id="resultCount">
+        0 records
+       </span>
+       <label class="muted" for="pageSize">
+        Rows:
+       </label>
+       <select aria-label="Rows per page" class="page-size" id="pageSize">
+        <option>
+         10
+        </option>
+        <option>
+         25
+        </option>
+        <option>
+         50
+        </option>
+        <option>
+         100
+        </option>
+       </select>
+      </div>
+     </div>
+    </div>
+    <div class="table-container">
+     <table id="workersTable">
+      <thead>
+       <tr>
+        <th>
+         Date
+        </th>
+        <th>
+         Project
+        </th>
+        <th>
+         Worker Name
+        </th>
+        <th>
+         DOB
+        </th>
+        <th>
+         Mobile
+        </th>
+        <th>
+         Emergency Contact
+        </th>
+        <th>
+         Designation
+        </th>
+        <th>
+         Supervisor Contact
+        </th>
+        <th>
+         Contractor
+        </th>
+        <th>
+         Aadhar Front
+        </th>
+        <th>
+         Aadhar Back
+        </th>
+        <th>
+         Worker Photo
+        </th>
+        <th>
+         Remarks
+        </th>
+        <th>
+         Action
+        </th>
+       </tr>
+      </thead>
+      <tbody id="dataTable">
+       <tr>
+        <td class="no-data" colspan="14">
+         Sign in to load records.
+        </td>
+       </tr>
+      </tbody>
+     </table>
+    </div>
+    <div class="pagination">
+     <span id="pageSummary">
+      Page 1 of 1
+     </span>
+     <div class="page-controls">
+      <button class="secondary small-btn" id="firstPage" onclick="goToPage(1)">
+       First
+      </button>
+      <button class="secondary small-btn" id="prevPage" onclick="goToPage(currentPage-1)">
+       Previous
+      </button>
+      <span id="pageNumbers">
+      </span>
+      <button class="secondary small-btn" id="nextPage" onclick="goToPage(currentPage+1)">
+       Next
+      </button>
+      <button class="secondary small-btn" id="lastPage" onclick="goToPage(totalPages)">
+       Last
+      </button>
+     </div>
+    </div>
+   </div>
+  </section>
+  <div aria-label="Camera" aria-modal="true" class="camera-modal" id="cameraModal" role="dialog">
+   <div class="camera-box">
+    <h3>
+     Take a photo
+    </h3>
+    <video autoplay="" id="cameraVideo" playsinline="">
+    </video>
+    <canvas class="hidden" id="cameraCanvas">
+    </canvas>
+    <p class="hint">
+     Allow camera access if your browser asks. Camera access requires HTTPS.
+    </p>
+    <div class="camera-actions">
+     <button class="capture-btn" onclick="capturePhoto()" type="button">
+      Capture Photo
+     </button>
+     <button class="close-camera-btn" onclick="closeCamera()" type="button">
+      Cancel
+     </button>
+    </div>
+   </div>
+  </div>
+  <div aria-label="Image preview" aria-modal="true" class="image-viewer" id="imageViewer" onclick="closeImageViewer()" role="dialog">
+   <span aria-label="Close image preview" class="close-viewer" role="button">
+    ×
+   </span>
+   <img alt="Full image preview" id="viewerImage" onclick="event.stopPropagation()"/>
+  </div>
+  <div aria-label="Edit worker record" aria-modal="true" class="edit-modal" id="editModal" role="dialog">
+   <div class="edit-box">
+    <h2>
+     Edit Worker Record
+    </h2>
+    <p class="muted">
+     Leave an image field unchanged to keep the currently stored image.
+    </p>
+    <form id="editForm">
+     <input id="editId" type="hidden"/>
+     <div class="edit-grid">
+      <div class="form-group">
+       <label for="editProject">
+        Project *
+       </label>
+       <select id="editProject" required="">
+        <option>
+         EY-Global Kochi
+        </option>
+        <option>
+         Ocean Lifespaces
+        </option>
+       </select>
+      </div>
+      <div class="form-group">
+       <label for="editEmployeeName">
+        Worker Name *
+       </label>
+       <input id="editEmployeeName" maxlength="120" required=""/>
+      </div>
+      <div class="form-group">
+       <label for="editDateOfBirth">
+        Date of Birth *
+       </label>
+       <input id="editDateOfBirth" required="" type="date"/>
+      </div>
+      <div class="form-group">
+       <label for="editMobileNumber">
+        Mobile Number *
+       </label>
+       <input id="editMobileNumber" maxlength="10" pattern="[0-9]{10}" required=""/>
+      </div>
+      <div class="form-group">
+       <label for="editEmergencyContact">
+        Emergency Contact *
+       </label>
+       <input id="editEmergencyContact" maxlength="10" pattern="[0-9]{10}" required=""/>
+      </div>
+      <div class="form-group">
+       <label for="editDesignation">
+        Designation *
+       </label>
+       <select id="editDesignation" required="">
+        <option>
+         Asst-Project Manager
+        </option>
+        <option>
+         Fire Fighter
+        </option>
+        <option>
+         Gypsum
+        </option>
+        <option>
+         Helper
+        </option>
+        <option>
+         Mason
+        </option>
+        <option>
+         Plaster
+        </option>
+        <option>
+         POP
+        </option>
+        <option>
+         Project Manager
+        </option>
+        <option>
+         Safety Engineer
+        </option>
+        <option>
+         Safety Manager
+        </option>
+        <option>
+         Safety Officer
+        </option>
+        <option>
+         Site Engineer
+        </option>
+        <option>
+         Supervisor
+        </option>
+        <option>
+         Welder
+        </option>
+        <option>
+         Other
+        </option>
+       </select>
+      </div>
+      <div class="form-group">
+       <label for="editSupervisorContact">
+        Supervisor Contact *
+       </label>
+       <input id="editSupervisorContact" maxlength="10" pattern="[0-9]{10}" required=""/>
+      </div>
+      <div class="form-group">
+       <label for="editContractorAgency">
+        Contractor *
+       </label>
+       <select id="editContractorAgency" required="">
+        <option>
+         Bushra Interiors
+        </option>
+        <option>
+         Cholo Ram Jaat furniture
+        </option>
+        <option>
+         Dharmendra
+        </option>
+        <option>
+         Excellent Security Force
+        </option>
+        <option>
+         Limra
+        </option>
+        <option>
+         Lotus MEP Solution PVT LTD
+        </option>
+        <option>
+         MD Contracting
+        </option>
+        <option>
+         Pappu Ram
+        </option>
+        <option>
+         Rajesh Contact
+        </option>
+        <option>
+         Sree Vignesh
+        </option>
+        <option>
+         Sree Infra Project PVT LTD
+        </option>
+        <option>
+         Other
+        </option>
+       </select>
+      </div>
+     </div>
+     <div class="form-group">
+      <label for="editRemarks">
+       Remarks
+      </label>
+      <textarea id="editRemarks" maxlength="1000"></textarea>
+     </div>
+     <div class="edit-images">
+      <div class="edit-image-card">
+       <strong>
+        Aadhaar front
+       </strong>
+       <img alt="Aadhaar front preview" id="editFrontPreview"/>
+       <input accept="image/*" id="editFrontFile" type="file"/>
+       <button class="small-btn secondary" onclick="clearEditImage('aadharFront')" type="button">
+        Keep existing
+       </button>
+      </div>
+      <div class="edit-image-card">
+       <strong>
+        Aadhaar back
+       </strong>
+       <img alt="Aadhaar back preview" id="editBackPreview"/>
+       <input accept="image/*" id="editBackFile" type="file"/>
+       <button class="small-btn secondary" onclick="clearEditImage('aadharBack')" type="button">
+        Keep existing
+       </button>
+      </div>
+      <div class="edit-image-card">
+       <strong>
+        Worker photo
+       </strong>
+       <img alt="Worker photo preview" id="editPhotoPreview"/>
+       <input accept="image/*" id="editPhotoFile" type="file"/>
+       <button class="small-btn secondary" onclick="clearEditImage('photoUpload')" type="button">
+        Keep existing
+       </button>
+      </div>
+     </div>
+     <div class="modal-actions" style="margin-top:18px">
+      <button class="primary" id="saveEditBtn" type="submit">
+       Save Changes
+      </button>
+      <button class="secondary" onclick="closeEditModal()" type="button">
+       Cancel
+      </button>
+     </div>
+    </form>
+   </div>
+  </div>
+  <div aria-live="polite" class="toast-region" id="toastRegion">
+  </div>
+  <script>
+'use strict';
+const form = document.getElementById('workerForm');
+const IMAGE_IDS = ['aadharFront', 'aadharBack', 'photoUpload'];
+const IMAGE_LABELS = { aadharFront: 'Aadhaar front', aadharBack: 'Aadhaar back', photoUpload: 'Worker photo' };
+const FIELD_IDS = ['project', 'employeeName', 'dateOfBirth', 'mobileNumber', 'emergencyContact', 'designation', 'supervisorContact', 'contractorAgency', 'remarks'];
+let cameraStream = null;
+let cameraTarget = null;
+let cachedRecords = [];
+let filteredRecords = [];
+let adminToken = null;
+let adminUsername = '';
+let currentPage = 1;
+let totalPages = 1;
+let editingRecord = null;
+let clearedEditImages = new Set();
+function byId(id) { return document.getElementById(id); }
+function googleAvailable() { return typeof google !== 'undefined' && google.script && google.script.run; }
+function toast(message, type = 'success') { const item = document.createElement('div'); item.className = 'toast ' + type; item.textContent = message; byId('toastRegion').appendChild(item); window.setTimeout(() => item.remove(), 5000); }
+function setBusy(button, busy, label) { if (!button)
+    return; button.disabled = busy; if (busy) {
+    button.dataset.originalText = button.textContent;
+    button.textContent = label || 'Please wait…';
+}
+else {
+    button.textContent = button.dataset.originalText || button.textContent;
+    delete button.dataset.originalText;
+} }
+function showMessage(message, ok) { const node = byId('message'); node.textContent = message; node.className = 'message ' + (ok ? 'success' : 'error'); node.style.display = 'block'; node.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+function clearMessage() { const node = byId('message'); node.style.display = 'none'; node.textContent = ''; node.className = 'message'; }
+function openCamera(targetId, cameraType) { cameraTarget = targetId; if (!window.isSecureContext || !navigator.mediaDevices?.getUserMedia) {
+    toast('Direct camera access requires HTTPS. Use Upload File / Use Camera instead.', 'error');
+    byId(targetId + 'File').click();
+    return;
+} navigator.mediaDevices.getUserMedia({ video: { facingMode: { ideal: cameraType } }, audio: false }).then(stream => { cameraStream = stream; const video = byId('cameraVideo'); video.srcObject = stream; byId('cameraModal').style.display = 'flex'; return video.play(); }).catch(error => { console.error(error); toast('Camera access failed. Check browser permission or upload a file.', 'error'); byId(targetId + 'File').click(); }); }
+function capturePhoto() { const video = byId('cameraVideo'), canvas = byId('cameraCanvas'); if (!video.videoWidth) {
+    toast('Camera is not ready. Please wait.', 'error');
+    return;
+} canvas.width = video.videoWidth; canvas.height = video.videoHeight; canvas.getContext('2d').drawImage(video, 0, 0); setImageData(cameraTarget, canvas.toDataURL('image/jpeg', 0.72)); closeCamera(); }
+function closeCamera() { if (cameraStream) {
+    cameraStream.getTracks().forEach(track => track.stop());
+    cameraStream = null;
+} const video = byId('cameraVideo'); if (video)
+    video.srcObject = null; byId('cameraModal').style.display = 'none'; }
+function selectFile(input, targetId) { const file = input.files?.[0]; if (!file)
+    return; if (!file.type.startsWith('image/')) {
+    toast('Please select an image file.', 'error');
+    input.value = '';
+    return;
+} if (file.size > 12 * 1024 * 1024) {
+    toast('Choose an image smaller than 12 MB.', 'error');
+    input.value = '';
+    return;
+} compressImageFile(file).then(data => setImageData(targetId, data)).catch(error => { console.error(error); toast('Unable to read this image. Choose a JPG or PNG file.', 'error'); input.value = ''; }); }
+function compressImageFile(file) { return new Promise((resolve, reject) => { const reader = new FileReader(); reader.onerror = () => reject(new Error('Read failed')); reader.onload = () => { const img = new Image(); img.onerror = () => reject(new Error('Image failed')); img.onload = () => { const max = 1400, scale = Math.min(1, max / Math.max(img.naturalWidth, img.naturalHeight)); const canvas = document.createElement('canvas'); canvas.width = Math.max(1, Math.round(img.naturalWidth * scale)); canvas.height = Math.max(1, Math.round(img.naturalHeight * scale)); const context = canvas.getContext('2d'); context.drawImage(img, 0, 0, canvas.width, canvas.height); resolve(canvas.toDataURL('image/jpeg', 0.72)); }; img.src = reader.result; }; reader.readAsDataURL(file); }); }
+function setImageData(id, data) { byId(id).value = data; const preview = byId(id + 'Preview'); preview.replaceChildren(); const img = document.createElement('img'); img.src = data; img.alt = IMAGE_LABELS[id] || id; img.onclick = () => openImageViewer(data); const remove = document.createElement('button'); remove.type = 'button'; remove.textContent = 'Remove'; remove.className = 'danger small-btn'; remove.onclick = () => removeImage(id); preview.append(img, remove); }
+function removeImage(id) { byId(id).value = ''; byId(id + 'Preview').replaceChildren(); const file = byId(id + 'File'); if (file)
+    file.value = ''; }
+function clearImages() { IMAGE_IDS.forEach(removeImage); clearMessage(); }
+function getFormRecord() { return { project: byId('project').value, employeeName: byId('employeeName').value.trim(), dateOfBirth: byId('dateOfBirth').value, mobileNumber: byId('mobileNumber').value.trim(), emergencyContact: byId('emergencyContact').value.trim(), designation: byId('designation').value, supervisorContact: byId('supervisorContact').value.trim(), contractorAgency: byId('contractorAgency').value, remarks: byId('remarks').value.trim(), aadharFront: byId('aadharFront').value, aadharBack: byId('aadharBack').value, photoUpload: byId('photoUpload').value }; }
+function validateRecord(record, requireImages = true) { for (const key of ['project', 'employeeName', 'dateOfBirth', 'mobileNumber', 'emergencyContact', 'designation', 'supervisorContact', 'contractorAgency']) {
+    if (!record[key])
+        return 'Please complete all required fields.';
+} for (const key of ['mobileNumber', 'emergencyContact', 'supervisorContact'])
+    if (!/^\d{10}$/.test(record[key]))
+        return 'Mobile, emergency and supervisor numbers must be exactly 10 digits.'; if (record.dateOfBirth > new Date().toISOString().slice(0, 10))
+    return 'Date of birth cannot be in the future.'; if (requireImages && IMAGE_IDS.some(key => !record[key]))
+    return 'Please take or upload all three required images.'; return ''; }
+form.addEventListener('submit', event => { event.preventDefault(); clearMessage(); const record = getFormRecord(); const error = validateRecord(record, true); if (error) {
+    showMessage(error, false);
+    return;
+} if (!googleAvailable()) {
+    showMessage('Backend is unavailable. Open this portal using its deployed Google Apps Script Web App URL.', false);
+    return;
+} const button = form.querySelector('.submit-btn'); setBusy(button, true, 'Submitting…'); google.script.run.withSuccessHandler(result => { setBusy(button, false); if (result?.success) {
+    form.reset();
+    clearImages();
+    showMessage('Worker registration submitted successfully. Registration ID: ' + result.id, true);
+}
+else
+    showMessage(result?.message || 'Unable to submit registration.', false); }).withFailureHandler(error => { setBusy(button, false); showMessage('Submission failed: ' + (error.message || error), false); }).submitWorker(record); });
+function showAdminLogin() { byId('formPanel').classList.add('hidden'); byId('adminLoginPanel').classList.remove('hidden'); byId('loginError').style.display = 'none'; byId('adminUsername').focus(); }
+function cancelAdminLogin() { byId('adminLoginPanel').classList.add('hidden'); byId('formPanel').classList.remove('hidden'); }
+byId('loginForm').addEventListener('submit', event => { event.preventDefault(); adminLogin(); });
+function adminLogin() { const username = byId('adminUsername').value.trim(), password = byId('adminPassword').value; if (!username || !password) {
+    byId('loginError').textContent = 'Enter both username and password.';
+    byId('loginError').style.display = 'block';
+    return;
+} if (!googleAvailable()) {
+    byId('loginError').textContent = 'Backend unavailable. Deploy and open the Apps Script Web App URL.';
+    byId('loginError').style.display = 'block';
+    return;
+} const button = document.querySelector('.admin-login-submit'); setBusy(button, true, 'Signing in…'); google.script.run.withSuccessHandler(result => { setBusy(button, false); if (result?.success && result.token) {
+    adminToken = result.token;
+    adminUsername = result.username || username;
+    byId('adminUserBadge').textContent = adminUsername;
+    byId('adminLoginPanel').classList.add('hidden');
+    byId('adminPanel').style.display = 'block';
+    document.body.classList.add('admin-mode');
+    byId('adminPassword').value = '';
+    refreshAdminData();
+}
+else {
+    byId('loginError').textContent = result?.message || 'Invalid username or password.';
+    byId('loginError').style.display = 'block';
+    byId('adminPassword').value = '';
+} }).withFailureHandler(error => { setBusy(button, false); byId('loginError').textContent = 'Login failed: ' + (error.message || error); byId('loginError').style.display = 'block'; }).checkAdmin(username, password); }
+function refreshAdminData() { if (!adminToken)
+    return; byId('adminStatus').textContent = 'Loading shared worker records…'; google.script.run.withSuccessHandler(records => { cachedRecords = Array.isArray(records) ? records : []; fillFilterOptions(); applyFilters(); updateDashboard(); byId('adminStatus').textContent = 'Shared records loaded: ' + cachedRecords.length + ' · Last refreshed ' + new Date().toLocaleTimeString(); }).withFailureHandler(error => { byId('adminStatus').textContent = 'Could not load records: ' + (error.message || error); if (String(error.message || '').toLowerCase().includes('session'))
+    logout(false); }).getAllWorkers(adminToken); }
+function updateDashboard() { byId('statTotal').textContent = cachedRecords.length; const today = new Date().toISOString().slice(0, 10); byId('statToday').textContent = cachedRecords.filter(r => String(r.date || '').slice(0, 10) === today).length; const projects = countBy(cachedRecords, 'project'), designations = countBy(cachedRecords, 'designation'), contractors = countBy(cachedRecords, 'contractorAgency'); byId('statProjects').textContent = Object.keys(projects).length; byId('statContractors').textContent = Object.keys(contractors).length; renderMiniList('projectStats', projects); renderMiniList('designationStats', designations); renderMiniList('contractorStats', contractors); }
+function countBy(records, key) { return records.reduce((out, record) => { const name = record[key] || 'Not specified'; out[name] = (out[name] || 0) + 1; return out; }, {}); }
+function renderMiniList(id, counts) { const container = byId(id); container.replaceChildren(); const entries = Object.entries(counts).sort((a, b) => b[1] - a[1]); if (!entries.length) {
+    const empty = document.createElement('span');
+    empty.className = 'muted';
+    empty.textContent = 'No records';
+    container.appendChild(empty);
+    return;
+} entries.slice(0, 30).forEach(([name, count]) => { const line = document.createElement('div'), label = document.createElement('span'), value = document.createElement('strong'); label.textContent = name; value.textContent = count; line.append(label, value); container.appendChild(line); }); }
+function fillFilterOptions() { const specs = [['projectFilter', 'project', 'All projects'], ['designationFilter', 'designation', 'All designations'], ['contractorFilter', 'contractorAgency', 'All contractors']]; specs.forEach(([id, key, placeholder]) => { const select = byId(id), current = select.value, values = [...new Set(cachedRecords.map(r => r[key]).filter(Boolean))].sort((a, b) => a.localeCompare(b)); select.replaceChildren(new Option(placeholder, '')); values.forEach(value => select.add(new Option(value, value))); if (values.includes(current))
+    select.value = current; }); }
+function applyFilters() { const query = byId('searchInput').value.trim().toLowerCase(), project = byId('projectFilter').value, designation = byId('designationFilter').value, contractor = byId('contractorFilter').value, sort = byId('sortFilter').value; filteredRecords = cachedRecords.filter(record => { const searchable = [record.id, record.date, record.project, record.employeeName, record.dateOfBirth, record.mobileNumber, record.emergencyContact, record.designation, record.supervisorContact, record.contractorAgency, record.remarks].join(' ').toLowerCase(); return (!query || searchable.includes(query)) && (!project || record.project === project) && (!designation || record.designation === designation) && (!contractor || record.contractorAgency === contractor); }); filteredRecords.sort((a, b) => { if (sort === 'nameAsc')
+    return String(a.employeeName).localeCompare(String(b.employeeName)); if (sort === 'nameDesc')
+    return String(b.employeeName).localeCompare(String(a.employeeName)); if (sort === 'projectAsc')
+    return String(a.project).localeCompare(String(b.project)); const da = Date.parse(a.date) || 0, db = Date.parse(b.date) || 0; return sort === 'oldest' ? da - db : db - da; }); currentPage = 1; renderTable(); }
+['searchInput', 'projectFilter', 'designationFilter', 'contractorFilter', 'sortFilter', 'pageSize'].forEach(id => byId(id).addEventListener(id === 'searchInput' ? 'input' : 'change', () => { if (id === 'pageSize') {
+    currentPage = 1;
+    renderTable();
+}
+else
+    applyFilters(); }));
+function resetFilters() { byId('searchInput').value = ''; ['projectFilter', 'designationFilter', 'contractorFilter'].forEach(id => byId(id).value = ''); byId('sortFilter').value = 'newest'; applyFilters(); }
+function renderTable() { const size = Number(byId('pageSize').value) || 10; totalPages = Math.max(1, Math.ceil(filteredRecords.length / size)); if (currentPage > totalPages)
+    currentPage = totalPages; const start = (currentPage - 1) * size, rows = filteredRecords.slice(start, start + size), tbody = byId('dataTable'); tbody.replaceChildren(); byId('resultCount').textContent = filteredRecords.length + ' matching record' + (filteredRecords.length === 1 ? '' : 's'); if (!rows.length) {
+    const tr = document.createElement('tr'), td = document.createElement('td');
+    td.colSpan = 14;
+    td.className = 'no-data';
+    td.textContent = 'No worker records match these filters.';
+    tr.appendChild(td);
+    tbody.appendChild(tr);
+}
+else
+    rows.forEach(record => tbody.appendChild(createRecordRow(record))); byId('pageSummary').textContent = 'Page ' + currentPage + ' of ' + totalPages; ['firstPage', 'prevPage'].forEach(id => byId(id).disabled = currentPage <= 1); ['nextPage', 'lastPage'].forEach(id => byId(id).disabled = currentPage >= totalPages); byId('pageNumbers').textContent = ''; const label = document.createElement('span'); label.className = 'muted'; label.textContent = filteredRecords.length ? `${start + 1}–${Math.min(start + size, filteredRecords.length)} of ${filteredRecords.length}` : '0 results'; byId('pageNumbers').appendChild(label); }
+function createRecordRow(record) { const tr = document.createElement('tr'); [formatTimestamp(record.date), record.project, record.employeeName, record.dateOfBirth, record.mobileNumber, record.emergencyContact, record.designation, record.supervisorContact, record.contractorAgency].forEach(value => { const td = document.createElement('td'); td.textContent = value || ''; tr.appendChild(td); }); [['aadharFront', 'Aadhaar front'], ['aadharBack', 'Aadhaar back'], ['photoUpload', 'Worker photo']].forEach(([key, label]) => { const td = document.createElement('td'); if (record[key]) {
+    const image = document.createElement('img');
+    image.className = 'worker-image';
+    image.src = record[key];
+    image.alt = label;
+    image.loading = 'lazy';
+    image.onclick = () => openImageViewer(record[key]);
+    td.appendChild(image);
+}
+else {
+    td.textContent = 'No image';
+    td.className = 'muted';
+} tr.appendChild(td); }); const remarks = document.createElement('td'); remarks.textContent = record.remarks || ''; remarks.title = record.remarks || ''; remarks.style.maxWidth = '220px'; remarks.style.overflow = 'hidden'; remarks.style.textOverflow = 'ellipsis'; tr.appendChild(remarks); const actions = document.createElement('td'), wrap = document.createElement('div'); wrap.className = 'row-actions'; const edit = document.createElement('button'); edit.className = 'primary'; edit.textContent = 'Edit'; edit.onclick = () => openEditModal(record.id); const remove = document.createElement('button'); remove.className = 'delete-btn'; remove.textContent = 'Delete'; remove.onclick = () => deleteRecord(record.id); wrap.append(edit, remove); actions.appendChild(wrap); tr.appendChild(actions); return tr; }
+function formatTimestamp(value) { if (!value)
+    return ''; const date = new Date(value); return Number.isNaN(date.getTime()) ? String(value).slice(0, 10) : date.toLocaleString(); }
+function goToPage(page) { currentPage = Math.min(totalPages, Math.max(1, Number(page) || 1)); renderTable(); }
+function deleteRecord(id) { const record = cachedRecords.find(item => item.id === id); if (!record)
+    return; if (!confirm('Permanently delete the record for ' + record.employeeName + ' and its stored images? This cannot be undone.'))
+    return; google.script.run.withSuccessHandler(result => { if (result?.success) {
+    toast(result.message || 'Record deleted.');
+    refreshAdminData();
+}
+else
+    toast(result?.message || 'Delete failed.', 'error'); }).withFailureHandler(error => toast('Delete failed: ' + (error.message || error), 'error')).deleteWorker(adminToken, id); }
+function logout(callServer = true) { const token = adminToken; adminToken = null; adminUsername = ''; cachedRecords = []; filteredRecords = []; byId('adminPanel').style.display = 'none'; byId('adminLoginPanel').classList.add('hidden'); byId('formPanel').classList.remove('hidden'); document.body.classList.remove('admin-mode'); byId('adminPassword').value = ''; byId('adminUsername').value = ''; if (callServer && token && googleAvailable())
+    google.script.run.adminLogout(token); }
+function openImageViewer(source) { if (!source)
+    return; byId('viewerImage').src = source; byId('imageViewer').style.display = 'flex'; }
+function closeImageViewer() { byId('imageViewer').style.display = 'none'; byId('viewerImage').src = ''; }
+function printReport() { const table = byId('workersTable').cloneNode(true); const actionIndex = 13; Array.from(table.rows).forEach(row => { if (row.cells.length > actionIndex)
+    row.deleteCell(actionIndex); }); const popup = window.open('', '_blank', 'width=1100,height=800'); if (!popup) {
+    toast('Allow pop-ups to print the report.', 'error');
+    return;
+} popup.document.write('<!doctype html><html><head><title>Workers Report</title><style>body{font-family:Arial;padding:20px}h1{font-size:20px}table{border-collapse:collapse;width:100%;font-size:10px}th,td{border:1px solid #aaa;padding:5px;text-align:left}th{background:#1f4e78;color:white}img{width:45px;height:45px;object-fit:contain}@media print{button{display:none}}</style></head><body><h1>Ocean Lifespaces — Workers Report</h1><p>Printed: ' + escapeHtml(new Date().toLocaleString()) + '</p>' + table.outerHTML + '</body></html>'); popup.document.close(); popup.focus(); popup.print(); }
+function escapeHtml(value) { return String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char])); }
+function dataUrlToBuffer(dataUrl) { const parts = dataUrl.split(','); if (parts.length !== 2)
+    throw new Error('Invalid image data'); const meta = parts[0], base64 = parts[1], mime = (meta.match(/data:(.*?);base64/) || [])[1] || 'image/jpeg', binary = atob(base64), bytes = new Uint8Array(binary.length); for (let i = 0; i < binary.length; i++)
+    bytes[i] = binary.charCodeAt(i); return { buffer: bytes, extension: mime.includes('png') ? 'png' : 'jpeg' }; }
+async function exportExcel() { if (!adminToken) {
+    toast('Please sign in again.', 'error');
+    return;
+} if (!filteredRecords.length) {
+    toast('No records in the current view to export.', 'error');
+    return;
+} if (typeof ExcelJS === 'undefined') {
+    toast('Excel library did not load. Check the internet connection.', 'error');
+    return;
+} const button = document.querySelector('.export-btn'); setBusy(button, true, 'Preparing Excel…'); try {
+    const workbook = new ExcelJS.Workbook();
+    workbook.creator = 'Ocean Lifespaces India Private Limited';
+    workbook.created = new Date();
+    workbook.subject = 'Workers registration report';
+    workbook.company = 'Ocean Lifespaces India Private Limited';
+    const sheet = workbook.addWorksheet('Workers', { views: [{ state: 'frozen', ySplit: 1 }] });
+    sheet.columns = [{ header: 'Registration Date', key: 'date', width: 24 }, { header: 'Project', key: 'project', width: 24 }, { header: 'Worker Name', key: 'employeeName', width: 25 }, { header: 'Date of Birth', key: 'dateOfBirth', width: 16 }, { header: 'Mobile Number', key: 'mobileNumber', width: 17 }, { header: 'Emergency Contact', key: 'emergencyContact', width: 20 }, { header: 'Designation', key: 'designation', width: 23 }, { header: 'Supervisor Contact', key: 'supervisorContact', width: 22 }, { header: 'Contractor Agency', key: 'contractorAgency', width: 30 }, { header: 'Aadhaar Front', key: 'front', width: 19 }, { header: 'Aadhaar Back', key: 'back', width: 19 }, { header: 'Worker Photo', key: 'photo', width: 19 }, { header: 'Remarks', key: 'remarks', width: 32 }];
+    const header = sheet.getRow(1);
+    header.height = 28;
+    header.font = { bold: true, color: { argb: 'FFFFFFFF' } };
+    header.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1F4E78' } };
+    header.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+    for (let index = 0; index < filteredRecords.length; index++) {
+        const record = filteredRecords[index], rowNumber = index + 2;
+        sheet.addRow({ date: formatTimestamp(record.date), project: record.project, employeeName: record.employeeName, dateOfBirth: record.dateOfBirth, mobileNumber: String(record.mobileNumber || ''), emergencyContact: String(record.emergencyContact || ''), designation: record.designation, supervisorContact: String(record.supervisorContact || ''), contractorAgency: record.contractorAgency, remarks: record.remarks });
+        const row = sheet.getRow(rowNumber);
+        row.height = 72;
+        row.alignment = { vertical: 'middle', wrapText: true };
+        for (const [key, col] of [['aadharFront', 9], ['aadharBack', 10], ['photoUpload', 11]]) {
+            if (!record[key])
+                continue;
+            try {
+                const parsed = dataUrlToBuffer(record[key]);
+                const imageId = workbook.addImage({ buffer: parsed.buffer, extension: parsed.extension });
+                sheet.addImage(imageId, { tl: { col: col, row: rowNumber - 1 }, br: { col: col + 1, row: rowNumber }, editAs: 'oneCell' });
+            }
+            catch (error) {
+                sheet.getCell(rowNumber, col + 1).value = 'Image unavailable';
+                console.warn('Image export skipped', error);
+            }
+        }
+    }
+    sheet.autoFilter = { from: { row: 1, column: 1 }, to: { row: 1, column: 13 } };
+    sheet.eachRow((row, rowNumber) => { if (rowNumber > 1)
+        row.eachCell(cell => { cell.border = { bottom: { style: 'hair', color: { argb: 'FFD9E2EC' } } }; }); });
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    const url = URL.createObjectURL(blob), anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = 'Ocean_Lifespaces_Workers_' + new Date().toISOString().slice(0, 10) + '.xlsx';
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 5000);
+    toast('Excel report created with images for ' + filteredRecords.length + ' records.');
+}
+catch (error) {
+    console.error(error);
+    toast('Excel export failed. Try exporting fewer records or smaller images.', 'error');
+}
+finally {
+    setBusy(button, false);
+} }
+function openEditModal(id) { const record = cachedRecords.find(item => item.id === id); if (!record)
+    return; editingRecord = record; clearedEditImages = new Set(); byId('editId').value = record.id; const mapping = { project: 'project', employeeName: 'employeeName', dateOfBirth: 'dateOfBirth', mobileNumber: 'mobileNumber', emergencyContact: 'emergencyContact', designation: 'designation', supervisorContact: 'supervisorContact', contractorAgency: 'contractorAgency', remarks: 'remarks' }; Object.entries(mapping).forEach(([formId, key]) => { const input = byId('edit' + formId.charAt(0).toUpperCase() + formId.slice(1)); if (input)
+    input.value = record[key] || ''; }); byId('editFrontPreview').src = record.aadharFront || ''; byId('editBackPreview').src = record.aadharBack || ''; byId('editPhotoPreview').src = record.photoUpload || ''; ['editFrontFile', 'editBackFile', 'editPhotoFile'].forEach(id => byId(id).value = ''); byId('editModal').style.display = 'flex'; }
+function closeEditModal() { byId('editModal').style.display = 'none'; editingRecord = null; clearedEditImages.clear(); }
+function clearEditImage(key) { clearedEditImages.delete(key); const map = { aadharFront: 'editFrontPreview', aadharBack: 'editBackPreview', photoUpload: 'editPhotoPreview' }; if (editingRecord)
+    byId(map[key]).src = editingRecord[key] || ''; const fileMap = { aadharFront: 'editFrontFile', aadharBack: 'editBackFile', photoUpload: 'editPhotoFile' }; byId(fileMap[key]).value = ''; }
+function readEditImage(input, key) { const file = input.files?.[0]; if (!file)
+    return; if (!file.type.startsWith('image/')) {
+    toast('Select a valid image file.', 'error');
+    input.value = '';
+    return;
+} if (file.size > 12 * 1024 * 1024) {
+    toast('Choose an image smaller than 12 MB.', 'error');
+    input.value = '';
+    return;
+} compressImageFile(file).then(data => { const map = { aadharFront: 'editFrontPreview', aadharBack: 'editBackPreview', photoUpload: 'editPhotoPreview' }; byId(map[key]).src = data; byId(map[key]).dataset.newImage = data; clearedEditImages.delete(key); }).catch(() => toast('Could not read selected image.', 'error')); }
+byId('editFrontFile').addEventListener('change', event => readEditImage(event.target, 'aadharFront'));
+byId('editBackFile').addEventListener('change', event => readEditImage(event.target, 'aadharBack'));
+byId('editPhotoFile').addEventListener('change', event => readEditImage(event.target, 'photoUpload'));
+byId('editForm').addEventListener('submit', event => { event.preventDefault(); if (!editingRecord)
+    return; const record = { id: byId('editId').value, project: byId('editProject').value, employeeName: byId('editEmployeeName').value.trim(), dateOfBirth: byId('editDateOfBirth').value, mobileNumber: byId('editMobileNumber').value.trim(), emergencyContact: byId('editEmergencyContact').value.trim(), designation: byId('editDesignation').value, supervisorContact: byId('editSupervisorContact').value.trim(), contractorAgency: byId('editContractorAgency').value, remarks: byId('editRemarks').value.trim() }; const error = validateRecord(record, false); if (error) {
+    toast(error, 'error');
+    return;
+} const images = [['aadharFront', 'editFrontPreview'], ['aadharBack', 'editBackPreview'], ['photoUpload', 'editPhotoPreview']]; images.forEach(([key, previewId]) => { const image = byId(previewId); if (image.dataset.newImage)
+    record[key] = image.dataset.newImage; }); const button = byId('saveEditBtn'); setBusy(button, true, 'Saving…'); google.script.run.withSuccessHandler(result => { setBusy(button, false); if (result?.success) {
+    toast(result.message || 'Worker updated.');
+    closeEditModal();
+    refreshAdminData();
+}
+else
+    toast(result?.message || 'Unable to update record.', 'error'); }).withFailureHandler(error => { setBusy(button, false); toast('Update failed: ' + (error.message || error), 'error'); }).updateWorker(adminToken, record); });
+byId('imageViewer').addEventListener('keydown', event => { if (event.key === 'Escape')
+    closeImageViewer(); });
+document.addEventListener('keydown', event => { if (event.key === 'Escape') {
+    closeCamera();
+    closeImageViewer();
+    closeEditModal();
+} });
+window.addEventListener('beforeunload', closeCamera);
+
+</script>
+ </body>
+</html>
+
